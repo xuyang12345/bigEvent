@@ -57,17 +57,15 @@
 <script src="./js/jquery-1.12.4.min.js"></script>
 <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 <script>
-    // 1. 登录按钮绑定点击事件
-    $("#btnlogin").click(function() {
-            var username = $("#user_name").val().trim();
-            var password = $('#password').val().trim();
-            if (username === '' || password === '') {
-                $('#myModal').modal("show")
-                $("#my_info").text("请输入用户名和密码");
-            }
+    // 用户模块 
+    //把所有的与用户相关的操作全部放在这个对象中
+    var user = {
+        login: function(userName, userPassword) {
+            // 发ajax请求 检查正确与否
+            console.log("发请求", userName, userPassword);
             $.post('http://localhost:8000/admin/login', {
-                user_name: username,
-                password: password
+                user_name: userName,
+                password: userPassword
             }, function(res) {
                 console.log(res);
                 if (res.code === 200) {
@@ -77,14 +75,29 @@
                     $("#my_info").text(res.msg);
                 }
             })
+        }
+    }
+</script>
+<script>
+    // 1. 登录按钮绑定点击事件
+    $("#btnlogin").click(function() {
+            var username = $("#user_name").val().trim();
+            var password = $('#password').val().trim();
+            if (username === '' || password === '') {
+                $('#myModal').modal("show")
+                $("#my_info").text("请输入用户名和密码");
+            }
+            user.login(username, password)
+
+
         })
         // 2. 判断用户名和密码是否为空
 
-    //    1. 空：提示用户
-    //    2. 非空：调用接口
-    //       1. 响应回来之后根据提示
-    //          1. 登录成功：去后台首页
-    //          2. 登录失败：使用bootstrap的模态框提示用户
+    // 1. 空： 提示用户
+    // 2. 非空： 调用接口
+    // 1. 响应回来之后根据提示
+    // 1. 登录成功： 去后台首页
+    // 2. 登录失败： 使用bootstrap的模态框提示用户
 </script>
 
 </html>
