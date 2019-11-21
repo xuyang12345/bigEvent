@@ -56,28 +56,9 @@
 </body>
 <script src="./js/jquery-1.12.4.min.js"></script>
 <script src="./js/bootstrap/js/bootstrap.min.js"></script>
-<script>
-    // 用户模块 
-    //把所有的与用户相关的操作全部放在这个对象中
-    var user = {
-        login: function(userName, userPassword) {
-            // 发ajax请求 检查正确与否
-            console.log("发请求", userName, userPassword);
-            $.post('http://localhost:8000/admin/login', {
-                user_name: userName,
-                password: userPassword
-            }, function(res) {
-                console.log(res);
-                if (res.code === 200) {
-                    location.href = './index.html'
-                } else {
-                    $('#myModal').modal("show")
-                    $("#my_info").text(res.msg);
-                }
-            })
-        }
-    }
-</script>
+
+<script src="./unit/user.js"></script>
+
 <script>
     // 1. 登录按钮绑定点击事件
     $("#btnlogin").click(function() {
@@ -87,7 +68,20 @@
                 $('#myModal').modal("show")
                 $("#my_info").text("请输入用户名和密码");
             }
-            user.login(username, password)
+            //发送请求，根据返回给出提示
+            //前两个参数是本次请求要传入的参数
+            //最后一个函数是：当本次请求成功之后要调用的函数
+            //这个res就是响应体
+            user.login(username, password, function(res) {
+                // console.log(res);
+                console.log(res);
+                if (res.code === 200) {
+                    location.href = './index.html'
+                } else {
+                    $('#myModal').modal("show")
+                    $("#my_info").text(res.msg);
+                }
+            })
 
 
         })
