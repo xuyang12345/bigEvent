@@ -25,27 +25,27 @@
         <div class="container-fluid common_con">
             <form class="form-horizontal article_form">
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
+                    <label for="inputEmail3" id="article_title" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="text" class="form-control" id="inputEmail3" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <img src="images/pic06.jpg" class="article_cover">
+                        <img src="images/pic06.jpg" id="article——corver" class="article_cover">
                         <input type="file" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
+                        <select class="form-control" id="cateContainer" name="type">
+                        <!-- <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
                             <option selected>类别四</option>
-                            <option>类别五</option>
+                            <option>类别五</option> -->
                         </select>
                     </div>
                 </div>
@@ -77,7 +77,41 @@
             </form>
         </div>
     </div>
+    <script src="./js/template-web.js"></script>
+    <script src="./unit/config.js"></script>
+    <script src="./unit/artcle.js"></script>
+    <script src="./unit/category.js"></script>
+    <script id="temp_cate" type="text/html">
+        {{each data item}}
+        <option value="{{item.id}}">{{item.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        //1.从地址栏中获取当前要编辑的文章的编号
+        //http://127.0.1:5500/web_back/article_edit.html?id=1574556041361
+        //(1)window.location.search===?id=15745556041361
+        //(2)通过substr(起点下标，长度)。如果不写第二个参数就会截取从起点开始到最后的内容
+        var str = window.location.search
+        var id = str.substr(4);
+        article.getDetail(id, function(res) {
+                console.log(res);
+                //把res.data中的内容显示在表单元素
+                //要先把所有的文章类型选出来放在select
+                category.show(function(result) {
+                    console.log(result);
+                    var htmlStr = template('temp_cate', result)
+                    $('#cateContainer').html(htmlStr)
+                        //确保当前文章对应的类型处于选中状态，
+                    $('#cateContainer').val(res.data.type)
+                })
+                $('#article_title').val(res.data.title)
+                $('#article_cover').prop('src', res.data.cover)
+                $('#dateinput').val(res.data.date)
+                $('#rich_content').val(res.data.content)
 
+            })
+            //3/保存修改
+    </script>
 </body>
 
 </html>
